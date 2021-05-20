@@ -78,7 +78,8 @@ void Tree::treeWalk(std::string mode)
     {
         printf("------------------------\n");
         printf("Levelorder walk the tree\n");
-        levelWalk(root, walkNum);
+        auto depth = levelWalk(root, walkNum);
+        printf("The min depth: %d, the max depth: %d\n", depth.first, depth.second);
     }
 }
 
@@ -112,10 +113,12 @@ void Tree::postorderWalk(node* x, int &walkNum)
     }
 }
 
-void Tree::levelWalk(node* x, int &walkNum)
+pair<int, int> Tree::levelWalk(node* x, int &walkNum)
 {
+    const int null = -1;
     queue<node*> nodeQueue = queue<node*>();
     int levelNum = 0;
+    pair<int, int> result{null, null};
     nodeQueue.push(x);
     while (nodeQueue.size() != 0) {
         printf("****************\n");
@@ -133,8 +136,15 @@ void Tree::levelWalk(node* x, int &walkNum)
             if (levelNode -> right != NULL) {
                 nodeQueue.push(levelNode -> right);
             }
+            if (levelNode -> left == NULL &&
+                levelNode -> right == NULL &&
+                result.first == null) {
+                result.first = levelNum;
+            }
         }
     }
+    result.second = levelNum;
+    return result;
 }
 
 void Tree::print(node *x, int ident, vector<int> &vecLeft)

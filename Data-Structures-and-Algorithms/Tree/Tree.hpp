@@ -13,6 +13,7 @@
 #include <string>
 
 using std::vector;
+using std::pair;
 
 class Tree
 {
@@ -31,7 +32,7 @@ private:
     void inorderWalk(node* x, int &walkNum);
     void preorderWalk(node* x, int &walkNum);
     void postorderWalk(node* x, int &walkNum);
-    void levelWalk(node* x, int &walkNum);
+    pair<int, int> levelWalk(node* x, int &walkNum);
     void print(node* x, int ident, vector<int> &vec_left);
     node* minNode(node* x);
     node* maxNode(node* x);
