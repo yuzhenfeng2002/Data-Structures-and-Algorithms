@@ -12,7 +12,7 @@ using std::queue;
 
 Tree::Tree()
 {
-    ;
+    root = NULL;
 }
 
 void Tree::insert(node* z)

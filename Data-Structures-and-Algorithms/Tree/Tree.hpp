@@ -51,3 +51,21 @@ public:
 };
 
 #endif /* Tree_hpp */
+
+
+//Test case:
+//Tree tree = Tree();
+//for (int i = 0; i < N; i++) {
+//    int randNum = rand() % (MAX - MIN + 1) + MIN;
+//    cout << "Insert: " << randNum << '\n';
+//    tree.insert(randNum);
+//}
+//tree.treeWalk("in");
+//tree.treeWalk("pre");
+//tree.treeWalk("post");
+//tree.treeWalk("level");
+//tree.printTree();
+//cout << "The minimum element is: " << tree.findExtremeNode("min") -> value << '\n';
+//cout << "The maximum element is: " << tree.findExtremeNode("max") -> value << '\n';
+//int randNum = rand() % (MAX - MIN + 1) + MIN;
+//cout << "To search and delete " << randNum << ", the result is: \n";

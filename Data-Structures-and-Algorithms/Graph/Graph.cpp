@@ -6,9 +6,6 @@
 //
 
 #include "Graph.hpp"
-#include <queue>
-
-using std::queue;
 
 Graph::Graph(int numOfNodes)
 {
@@ -58,6 +55,112 @@ vector<Edge> Graph::BFS(int sourceNode)
         }
     }
     return preNodeVec;
+}
+
+pair<list<int>, list<int>> Graph::DFS()
+{
+    list<int> firstTimeList = list<int>();
+    list<int> lastTimeList = list<int>();
+    vector<DFSEdge> nodeVec = vector<DFSEdge>(graph.size(), DFSEdge(null, inf));
+    unsigned int time = 0;
+    for (int i = 0; i < graph.size(); i++) {
+        if (nodeVec.at(i).getNodeIndex() == null) {
+            DFSVisit(i, time, nodeVec, firstTimeList, lastTimeList);
+        }
+    }
+    return pair<list<int>, list<int>>{firstTimeList, lastTimeList};
+}
+
+void Graph::DFSVisit(int sourceNode, int time,
+                     vector<DFSEdge> &nodeVec,
+                     list<int> &firstTimeList,
+                     list<int> &lastTimeList)
+{
+    nodeVec.at(sourceNode).setNodeIndex(visited);
+    time ++;
+    nodeVec.at(sourceNode).setFirstTime(time);
+    firstTimeList.push_front(sourceNode);
+    for (int i = 0; i < graph.at(sourceNode).size(); i++) {
+        auto v = graph.at(sourceNode).at(i).getNodeIndex();
+        if (nodeVec.at(v).getNodeIndex() == null) {
+            DFSVisit(v, time, nodeVec, firstTimeList, lastTimeList);
+        }
+    }
+    nodeVec.at(sourceNode).setNodeIndex(discovered);
+    time ++;
+    nodeVec.at(sourceNode).setLastTime(time);
+    lastTimeList.push_front(sourceNode);
+}
+
+list<int> Graph::topoSort()
+{
+    auto DFSResult = DFS();
+    list<int> result = list<int>(DFSResult.second);
+    int size = int(result.size());
+    // print
+    printf("Print the topological order:\n");
+    for (int i = 0; i < size; i++) {
+        printf("%d -> ", result.front());
+        result.pop_front();
+    }
+    printf("(end)\n");
+    return result;
+}
+
+Graph Graph::transpose()
+{
+    Graph transposeGraph = Graph(int(graph.size()));
+    for (int i = 0; i < graph.size(); i++) {
+        for (int j = 0; j < graph.at(i).size(); j++) {
+            transposeGraph.addEdge(graph.at(i).at(j).getNodeIndex(), i);
+        }
+    }
+    return transposeGraph;
+}
+
+vector<vector<int>> Graph::findSCCs()
+{
+    vector<vector<int>> SCCs = vector<vector<int>>();
+    auto DFSResult = DFS();
+    list<int> lastTimeListTG = list<int>(DFSResult.second);
+    Graph transposeG = transpose();
+    
+    vector<Edge> nodeVec = vector<Edge>(graph.size(), Edge(null, inf));
+    for (int i = 0; i < graph.size(); i++) {
+        int index = lastTimeListTG.front();
+        lastTimeListTG.pop_front();
+        
+        if (nodeVec.at(index).getNodeIndex() == null) {
+            vector<int> SCC = vector<int>();
+            stack<int> nodeStack = stack<int>();
+            nodeStack.push(index);
+            nodeVec.at(index).setNodeIndex(visited);
+            while (!nodeStack.empty()) {
+                auto u = nodeStack.top();
+                SCC.push_back(u);
+                nodeStack.pop();
+                for (int j = 0; j < transposeG.graph.at(u).size(); j++) {
+                    int v = transposeG.graph.at(u).at(j).getNodeIndex();
+                    if (nodeVec.at(v).getNodeIndex() == null) {
+                        nodeStack.push(v);
+                        nodeVec.at(v).setNodeIndex(visited);
+                    }
+                }
+            }
+            SCCs.push_back(SCC);
+        }
+    }
+    
+    // print
+    printf("Print the SCCs:\n");
+    for (int i = 0; i < SCCs.size(); i++) {
+        printf("SCC %d: ", i+1);
+        for (int j = 0; j < SCCs.at(i).size(); j++) {
+            printf("%d ", SCCs.at(i).at(j));
+        }
+        printf("\n");
+    }
+    return SCCs;
 }
 
 void Graph::printPath(int sourceNode, int destNode, vector<Edge> preNodeVec)

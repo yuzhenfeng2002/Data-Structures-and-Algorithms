@@ -12,7 +12,7 @@
 #include <vector>
 
 class Edge {
-private:
+protected:
     int _nodeIndex;
     int _length;
 public:
@@ -24,5 +24,14 @@ public:
     int getLength();
 };
 
+class DFSEdge : public Edge {
+protected:
+    int firstTime;
+    int lastTime;
+public:
+    DFSEdge(int nodeIndex, int length);
+    void setFirstTime(int firstT);
+    void setLastTime(int lastT);
+};
 
 #endif /* Edge_hpp */

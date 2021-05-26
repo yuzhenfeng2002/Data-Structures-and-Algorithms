@@ -34,3 +34,17 @@ int Edge::getLength()
 {
     return _length;
 }
+
+DFSEdge::DFSEdge(int nodeIndex, int length) : Edge(nodeIndex, length)
+{
+    ;
+}
+
+void DFSEdge::setFirstTime(int firstT)
+{
+    firstTime = firstT;
+}
+void DFSEdge::setLastTime(int lastT)
+{
+    lastTime = lastT;
+}
