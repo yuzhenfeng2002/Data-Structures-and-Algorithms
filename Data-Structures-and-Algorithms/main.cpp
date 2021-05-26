@@ -30,7 +30,11 @@ int main(int argc, const char * argv[]) {
     } catch (const char* msg) {
         std::cout << msg << std::endl;
     }
-    graph.topoSort();
+    try {
+        graph.topoSort();
+    } catch (const char* msg) {
+        std::cout << msg << std::endl;
+    }
     auto SCCs = graph.findSCCs();
     
     return 0;

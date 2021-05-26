@@ -36,6 +36,7 @@ private:
                   list<int> &firstTimeList,
                   list<int> &lastTimeList);
     Graph transpose();
+    bool isAcyclic();
     void printPath(int sourceNode, int destNode, vector<Edge> preEdgeVec);
 public:
     Graph(int numOfNodes);

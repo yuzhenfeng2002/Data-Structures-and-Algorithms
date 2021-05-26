@@ -92,8 +92,37 @@ void Graph::DFSVisit(int sourceNode, int time,
     lastTimeList.push_front(sourceNode);
 }
 
+bool Graph::isAcyclic()
+{
+    vector<Edge> nodeVec = vector<Edge>(graph.size(), Edge(null, inf));
+    for (int i = 0; i < graph.size(); i++) {
+        if (nodeVec.at(i).getNodeIndex() == null) {
+            stack<int> nodeStack = stack<int>();
+            nodeStack.push(i);
+            nodeVec.at(i).setNodeIndex(visited);
+            while (!nodeStack.empty()) {
+                auto u = nodeStack.top();
+                nodeStack.pop();
+                for (int j = 0; j < graph.at(u).size(); j++) {
+                    int v = graph.at(u).at(j).getNodeIndex();
+                    if (nodeVec.at(v).getNodeIndex() == null) {
+                        nodeStack.push(v);
+                        nodeVec.at(v).setNodeIndex(visited);
+                    }
+                    else
+                        return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
 list<int> Graph::topoSort()
 {
+    if (!isAcyclic()) {
+        throw "Not Acyclic.";
+    }
     auto DFSResult = DFS();
     list<int> result = list<int>(DFSResult.second);
     int size = int(result.size());
