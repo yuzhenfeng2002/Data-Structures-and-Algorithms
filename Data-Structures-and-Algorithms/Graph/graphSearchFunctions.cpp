@@ -1,60 +1,100 @@
 //
-//  Graph.cpp
-//  Graph
+//  graphSearchFunctions.cpp
+//  Data-Structures-and-Algorithms
 //
 //  Created by YzFENG on 2021/5/18.
 //
 
 #include "Graph.hpp"
 
-Graph::Graph(int numOfNodes)
+vector<pair<int, int>> Graph::BFS(int sourceNode)
 {
-    graph = vector<vector<Edge>>(numOfNodes);
-}
-
-void Graph::addEdge(int i, int j, int length, bool isDirected)
-{
-    graph[i].push_back(Edge(j, length));
-    if (!isDirected) {
-        graph[j].push_back(Edge(i, length));
-    }
-}
-
-void Graph::printGraph()
-{
-    for (int i = 0; i < graph.size(); i++) {
-        printf("The %dth node has %lu neighbors: \n", i, graph.at(i).size());
-        if (graph.at(i).size() == 0) {
-            continue;
-        }
-        printf("Node\tLength\n");
-        for (int j = 0; j < graph.at(i).size(); j++) {
-            graph.at(i).at(j).printEdge();
-        }
-    }
-}
-
-vector<Edge> Graph::BFS(int sourceNode)
-{
-    queue<int> nodeQueue = queue<int>();
-    vector<Edge> preNodeVec = vector<Edge>(graph.size(), Edge(null, inf));
-    preNodeVec.at(sourceNode).setLength(0);
-    preNodeVec.at(sourceNode).setNodeIndex(null);
-    nodeQueue.push(sourceNode);
-    while (!nodeQueue.empty()) {
-        auto u = nodeQueue.front();
-        nodeQueue.pop();
+    queue<int> nodeQ = queue<int>();
+    vector<pair<int, int>> nodeDistanceVec = vector<pair<int, int>>(graph.size(), std::make_pair(null, inf));
+    nodeDistanceVec.at(sourceNode).first = 0;
+    nodeDistanceVec.at(sourceNode).second = null;
+    nodeQ.push(sourceNode);
+    while (!nodeQ.empty()) {
+        int u = nodeQ.front();
+        nodeQ.pop();
         for (int i = 0; i < graph.at(u).size(); i++) {
-            int j = graph.at(u).at(i).getNodeIndex();
-            if (preNodeVec.at(j).getNodeIndex() == null) {
-                preNodeVec.at(j).setNodeIndex(u);
-                preNodeVec.at(j).setLength(graph.at(u).at(i).getLength() +
-                                           preNodeVec.at(u).getLength());
-                nodeQueue.push(j);
+            int j = graph.at(u).at(i).first;
+            if (nodeDistanceVec.at(j).first == null) {
+                nodeDistanceVec.at(j).first = u;
+                nodeDistanceVec.at(j).second = graph.at(u).at(i).second + nodeDistanceVec.at(u).second;
+                nodeQ.push(j);
             }
         }
     }
-    return preNodeVec;
+    return nodeDistanceVec;
+}
+
+void Graph::printBFSPath(int sourceNode, int destNode)
+{
+    auto nodeDistanceVec = BFS(sourceNode);
+    printf("The distance between the source and destination is %d.\n",
+           nodeDistanceVec.at(destNode).first);
+    printf("The path is:\n");
+    printPath(sourceNode, destNode, nodeDistanceVec);
+    printf("(end)\n");
+}
+
+void Graph::printPath(int sourceNode, int destNode, vector<pair<int, int>> nodeDistanceVec)
+{
+    if (sourceNode == destNode) {
+        printf("%d -> ", sourceNode);
+        return;
+    }
+    else if (nodeDistanceVec.at(destNode).first == null)
+    {
+        throw "No Path!";
+    }
+    else
+    {
+        printPath(sourceNode, nodeDistanceVec.at(destNode).first, nodeDistanceVec);
+        printf("%d -> ", destNode);
+        return;
+    }
+}
+
+void Graph::DFS(int a)
+{
+    unsigned int time = 0;
+    stack<int> nodeStack = stack<int>();
+    vector<int> nodeVec = vector<int>(graph.size(), null); // null means not visited
+    vector<pair<int, int>> nodeTimeStamp = vector<pair<int, int>>(graph.size(), pair<int, int>{0, 0});
+    list<int> firstTimeList = list<int>();
+    list<int> lastTimeList = list<int>();
+    bool isAcyclic = true;
+    for (int i = 0; i < graph.size(); i++) {
+        if (nodeVec.at(i) == null) {
+            stack<int> nodeStack = stack<int>();
+            nodeStack.push(i);
+            firstTimeList.push_front(i);
+            nodeTimeStamp.at(i).first = time ++;
+            nodeVec.at(i) = visited;
+            while (!nodeStack.empty()) {
+                auto u = nodeStack.top();
+                if (nodeVec.at(u) == discovered) {
+                    lastTimeList.push_front(u);
+                    nodeTimeStamp.at(u).second = time ++;
+                    nodeStack.pop();
+                }
+                for (int j = 0; j < graph.at(u).size(); j++) {
+                    int v = graph.at(u).at(j).first;
+                    if (nodeVec.at(v) == null) {
+                        nodeStack.push(v);
+                        firstTimeList.push_front(v);
+                        nodeTimeStamp.at(v).first = time ++;
+                        nodeVec.at(v) = visited;
+                    }
+                    else
+                        isAcyclic = false;
+                }
+                nodeVec.at(u) = discovered;
+            }
+        }
+    }
 }
 
 pair<list<int>, list<int>> Graph::DFS()
@@ -81,7 +121,7 @@ void Graph::DFSVisit(int sourceNode, int time,
     nodeVec.at(sourceNode).setFirstTime(time);
     firstTimeList.push_front(sourceNode);
     for (int i = 0; i < graph.at(sourceNode).size(); i++) {
-        auto v = graph.at(sourceNode).at(i).getNodeIndex();
+        auto v = graph.at(sourceNode).at(i).first;
         if (nodeVec.at(v).getNodeIndex() == null) {
             DFSVisit(v, time, nodeVec, firstTimeList, lastTimeList);
         }
@@ -104,7 +144,7 @@ bool Graph::isAcyclic()
                 auto u = nodeStack.top();
                 nodeStack.pop();
                 for (int j = 0; j < graph.at(u).size(); j++) {
-                    int v = graph.at(u).at(j).getNodeIndex();
+                    int v = graph.at(u).at(j).first;
                     if (nodeVec.at(v).getNodeIndex() == null) {
                         nodeStack.push(v);
                         nodeVec.at(v).setNodeIndex(visited);
@@ -136,16 +176,7 @@ list<int> Graph::topoSort()
     return result;
 }
 
-Graph Graph::transpose()
-{
-    Graph transposeGraph = Graph(int(graph.size()));
-    for (int i = 0; i < graph.size(); i++) {
-        for (int j = 0; j < graph.at(i).size(); j++) {
-            transposeGraph.addEdge(graph.at(i).at(j).getNodeIndex(), i);
-        }
-    }
-    return transposeGraph;
-}
+
 
 vector<vector<int>> Graph::findSCCs()
 {
@@ -169,7 +200,7 @@ vector<vector<int>> Graph::findSCCs()
                 SCC.push_back(u);
                 nodeStack.pop();
                 for (int j = 0; j < transposeG.graph.at(u).size(); j++) {
-                    int v = transposeG.graph.at(u).at(j).getNodeIndex();
+                    int v = transposeG.graph.at(u).at(j).first;
                     if (nodeVec.at(v).getNodeIndex() == null) {
                         nodeStack.push(v);
                         nodeVec.at(v).setNodeIndex(visited);
@@ -192,30 +223,6 @@ vector<vector<int>> Graph::findSCCs()
     return SCCs;
 }
 
-void Graph::printPath(int sourceNode, int destNode, vector<Edge> preNodeVec)
-{
-    if (sourceNode == destNode) {
-        printf("%d -> ", sourceNode);
-        return;
-    }
-    else if (preNodeVec.at(destNode).getNodeIndex() == null)
-    {
-        throw "No Path!";
-    }
-    else
-    {
-        printPath(sourceNode, preNodeVec.at(destNode).getNodeIndex(), preNodeVec);
-        printf("%d -> ", destNode);
-        return;
-    }
-}
 
-void Graph::printBFSPath(int sourceNode, int destNode)
-{
-    auto preNodeVec = BFS(sourceNode);
-    printf("The distance between the source and destination is %d.\n",
-           preNodeVec.at(destNode).getLength());
-    printf("The path is:\n");
-    printPath(sourceNode, destNode, preNodeVec);
-    printf("(end)\n");
-}
+
+
