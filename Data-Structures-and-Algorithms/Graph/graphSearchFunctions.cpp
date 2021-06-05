@@ -57,10 +57,10 @@ void Graph::printPath(int sourceNode, int destNode, vector<pair<int, int>> nodeD
     }
 }
 
-void Graph::DFS(int a)
+tuple<bool, list<int>, list<int>> Graph::DFS()
 {
     unsigned int time = 0;
-    stack<int> nodeStack = stack<int>();
+    stack<tuple<int, int, int>> nodeStack = stack<tuple<int, int, int>>();
     vector<int> nodeVec = vector<int>(graph.size(), null); // null means not visited
     vector<pair<int, int>> nodeTimeStamp = vector<pair<int, int>>(graph.size(), pair<int, int>{0, 0});
     list<int> firstTimeList = list<int>();
@@ -68,142 +68,110 @@ void Graph::DFS(int a)
     bool isAcyclic = true;
     for (int i = 0; i < graph.size(); i++) {
         if (nodeVec.at(i) == null) {
-            stack<int> nodeStack = stack<int>();
-            nodeStack.push(i);
-            firstTimeList.push_front(i);
-            nodeTimeStamp.at(i).first = time ++;
-            nodeVec.at(i) = visited;
-            while (!nodeStack.empty()) {
-                auto u = nodeStack.top();
-                if (nodeVec.at(u) == discovered) {
+            int step = 1;
+            int index = 0;
+            int u = i;
+            while (true) {
+                if (step == 1)
+                {
+                    nodeVec.at(u) = visited;
+                    time ++;
+                    nodeTimeStamp.at(u).first = time;
+                    firstTimeList.push_front(u);
+                    step = 2;
+                }
+                if (step == 2) {
+                    if (graph.at(u).size() == 0) {
+                        step = 3;
+                    }
+                    for (int j = 0; j < graph.at(u).size(); j++) {
+                        int v = graph.at(u).at(j).first;
+                        if (nodeVec.at(v) == null) {
+                            if (v >= index) {
+                                nodeStack.push(std::make_tuple(u, 2, v + 1));
+                                u = v;
+                                step = 1;
+                                index = 0;
+                                break;
+                            }
+                        }
+                        else if (nodeVec.at(v) == visited)
+                        {
+                            isAcyclic = false;
+                        }
+                        step = 3;
+                    }
+                }
+                if (step == 3) {
+                    nodeVec.at(u) = explored;
+                    time ++;
+                    nodeTimeStamp.at(u).second = time;
                     lastTimeList.push_front(u);
-                    nodeTimeStamp.at(u).second = time ++;
-                    nodeStack.pop();
-                }
-                for (int j = 0; j < graph.at(u).size(); j++) {
-                    int v = graph.at(u).at(j).first;
-                    if (nodeVec.at(v) == null) {
-                        nodeStack.push(v);
-                        firstTimeList.push_front(v);
-                        nodeTimeStamp.at(v).first = time ++;
-                        nodeVec.at(v) = visited;
+                    if (nodeStack.empty()) {
+                        break;
                     }
                     else
-                        isAcyclic = false;
-                }
-                nodeVec.at(u) = discovered;
-            }
-        }
-    }
-}
-
-pair<list<int>, list<int>> Graph::DFS()
-{
-    list<int> firstTimeList = list<int>();
-    list<int> lastTimeList = list<int>();
-    vector<DFSEdge> nodeVec = vector<DFSEdge>(graph.size(), DFSEdge(null, inf));
-    unsigned int time = 0;
-    for (int i = 0; i < graph.size(); i++) {
-        if (nodeVec.at(i).getNodeIndex() == null) {
-            DFSVisit(i, time, nodeVec, firstTimeList, lastTimeList);
-        }
-    }
-    return pair<list<int>, list<int>>{firstTimeList, lastTimeList};
-}
-
-void Graph::DFSVisit(int sourceNode, int time,
-                     vector<DFSEdge> &nodeVec,
-                     list<int> &firstTimeList,
-                     list<int> &lastTimeList)
-{
-    nodeVec.at(sourceNode).setNodeIndex(visited);
-    time ++;
-    nodeVec.at(sourceNode).setFirstTime(time);
-    firstTimeList.push_front(sourceNode);
-    for (int i = 0; i < graph.at(sourceNode).size(); i++) {
-        auto v = graph.at(sourceNode).at(i).first;
-        if (nodeVec.at(v).getNodeIndex() == null) {
-            DFSVisit(v, time, nodeVec, firstTimeList, lastTimeList);
-        }
-    }
-    nodeVec.at(sourceNode).setNodeIndex(discovered);
-    time ++;
-    nodeVec.at(sourceNode).setLastTime(time);
-    lastTimeList.push_front(sourceNode);
-}
-
-bool Graph::isAcyclic()
-{
-    vector<Edge> nodeVec = vector<Edge>(graph.size(), Edge(null, inf));
-    for (int i = 0; i < graph.size(); i++) {
-        if (nodeVec.at(i).getNodeIndex() == null) {
-            stack<int> nodeStack = stack<int>();
-            nodeStack.push(i);
-            nodeVec.at(i).setNodeIndex(visited);
-            while (!nodeStack.empty()) {
-                auto u = nodeStack.top();
-                nodeStack.pop();
-                for (int j = 0; j < graph.at(u).size(); j++) {
-                    int v = graph.at(u).at(j).first;
-                    if (nodeVec.at(v).getNodeIndex() == null) {
-                        nodeStack.push(v);
-                        nodeVec.at(v).setNodeIndex(visited);
+                    {
+                        auto node = nodeStack.top();
+                        nodeStack.pop();
+                        u = std::get<0>(node);
+                        step = std::get<1>(node);
+                        index = std::get<2>(node);
                     }
-                    else
-                        return false;
                 }
             }
         }
     }
-    return true;
+    return std::make_tuple(isAcyclic, firstTimeList, lastTimeList);
 }
 
 list<int> Graph::topoSort()
 {
-    if (!isAcyclic()) {
+    auto DFSResult = DFS();
+    auto isAcyclic = std::get<0>(DFSResult);
+    auto lastTimeList = std::get<2>(DFSResult);
+    
+    if (!isAcyclic) {
         throw "Not Acyclic.";
     }
-    auto DFSResult = DFS();
-    list<int> result = list<int>(DFSResult.second);
-    int size = int(result.size());
-    // print
+    int size = int(lastTimeList.size());
+    
+    // print the topological order
     printf("Print the topological order:\n");
     for (int i = 0; i < size; i++) {
-        printf("%d -> ", result.front());
-        result.pop_front();
+        printf("%d -> ", lastTimeList.front());
+        lastTimeList.pop_front();
     }
     printf("(end)\n");
-    return result;
+    return lastTimeList;
 }
-
-
 
 vector<vector<int>> Graph::findSCCs()
 {
-    vector<vector<int>> SCCs = vector<vector<int>>();
     auto DFSResult = DFS();
-    list<int> lastTimeListTG = list<int>(DFSResult.second);
+    auto lastTimeList = std::get<2>(DFSResult);
+    vector<vector<int>> SCCs = vector<vector<int>>();
     Graph transposeG = transpose();
     
-    vector<Edge> nodeVec = vector<Edge>(graph.size(), Edge(null, inf));
+    vector<int> nodeVec = vector<int>(graph.size(), null);
     for (int i = 0; i < graph.size(); i++) {
-        int index = lastTimeListTG.front();
-        lastTimeListTG.pop_front();
+        int index = lastTimeList.front();
+        lastTimeList.pop_front();
         
-        if (nodeVec.at(index).getNodeIndex() == null) {
+        if (nodeVec.at(index) == null) {
             vector<int> SCC = vector<int>();
             stack<int> nodeStack = stack<int>();
             nodeStack.push(index);
-            nodeVec.at(index).setNodeIndex(visited);
+            nodeVec.at(index) = visited;
             while (!nodeStack.empty()) {
                 auto u = nodeStack.top();
                 SCC.push_back(u);
                 nodeStack.pop();
                 for (int j = 0; j < transposeG.graph.at(u).size(); j++) {
                     int v = transposeG.graph.at(u).at(j).first;
-                    if (nodeVec.at(v).getNodeIndex() == null) {
+                    if (nodeVec.at(v) == null) {
                         nodeStack.push(v);
-                        nodeVec.at(v).setNodeIndex(visited);
+                        nodeVec.at(v) = visited;
                     }
                 }
             }
@@ -211,7 +179,7 @@ vector<vector<int>> Graph::findSCCs()
         }
     }
     
-    // print
+    // print the SCCs
     printf("Print the SCCs:\n");
     for (int i = 0; i < SCCs.size(); i++) {
         printf("SCC %d: ", i+1);
@@ -222,7 +190,3 @@ vector<vector<int>> Graph::findSCCs()
     }
     return SCCs;
 }
-
-
-
-

@@ -28,8 +28,8 @@ class Graph
 {
 private:
     const int null = -1;
-    const int visited = 0;
-    const int discovered = 1;
+    const int visited = -2;
+    const int explored = -3;
     const int inf = 65535;
     vector<vector<pair<int, int>>> graph; // pair<nodeIndex, length>
     vector<tuple<int, int, int>> edges; // tuple<u, v, length>
@@ -40,29 +40,22 @@ private:
     Graph transpose(); // return a transpose graph
     
     vector<pair<int, int>> BFS(int sourceNode); // return the vector of pair<prenode, distance from sourceNode>
-    pair<list<int>, list<int>> DFS();
-    
-    void DFSVisit(int sourceNode, int time,
-                  vector<DFSEdge> &nodeVec,
-                  list<int> &firstTimeList,
-                  list<int> &lastTimeList);
-    bool isAcyclic();
+    tuple<bool, list<int>, list<int>> DFS(); // return <isAcyclic, firstTimeList, lastTimeList>
+
     void printPath(int sourceNode, int destNode, vector<pair<int, int>> preEdgeVec);
 public:
     Graph(int numOfNodes);
     void addEdge(int i, int j, int length=1, bool isDirected=1);
     void printGraph();
-    void DFS(int a);
+    
     void printBFSPath(int sourceNode, int destNode);
-    list<int> topoSort();
+    list<int> topoSort(); // return the topological sort
     vector<vector<int>> findSCCs();
+    
     // return the edges pair<u, v> in the spanning tree
     vector<pair<int, int>> krustkalSpanningTree();
     vector<pair<int, int>> primSpanningTree(int seed);
-    
-    
-    
-};
 
+};
 
 #endif /* Graph_hpp */
