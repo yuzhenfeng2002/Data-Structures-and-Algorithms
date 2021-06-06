@@ -10,9 +10,9 @@
 vector<pair<int, int>> Graph::BFS(int sourceNode)
 {
     queue<int> nodeQ = queue<int>();
-    vector<pair<int, int>> nodeDistanceVec = vector<pair<int, int>>(graph.size(), std::make_pair(null, inf));
-    nodeDistanceVec.at(sourceNode).first = 0;
-    nodeDistanceVec.at(sourceNode).second = null;
+    vector<pair<int, int>> nodeDistanceVec = shortestPathInitialization();
+    nodeDistanceVec.at(sourceNode).first = null;
+    nodeDistanceVec.at(sourceNode).second = 0;
     nodeQ.push(sourceNode);
     while (!nodeQ.empty()) {
         int u = nodeQ.front();
@@ -27,16 +27,6 @@ vector<pair<int, int>> Graph::BFS(int sourceNode)
         }
     }
     return nodeDistanceVec;
-}
-
-void Graph::printBFSPath(int sourceNode, int destNode)
-{
-    auto nodeDistanceVec = BFS(sourceNode);
-    printf("The distance between the source and destination is %d.\n",
-           nodeDistanceVec.at(destNode).first);
-    printf("The path is:\n");
-    printPath(sourceNode, destNode, nodeDistanceVec);
-    printf("(end)\n");
 }
 
 void Graph::printPath(int sourceNode, int destNode, vector<pair<int, int>> nodeDistanceVec)
@@ -135,6 +125,7 @@ list<int> Graph::topoSort()
         throw "Not Acyclic.";
     }
     int size = int(lastTimeList.size());
+    auto result = lastTimeList;
     
     // print the topological order
     printf("Print the topological order:\n");
@@ -143,7 +134,7 @@ list<int> Graph::topoSort()
         lastTimeList.pop_front();
     }
     printf("(end)\n");
-    return lastTimeList;
+    return result;
 }
 
 vector<vector<int>> Graph::findSCCs()

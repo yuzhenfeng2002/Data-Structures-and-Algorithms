@@ -13,8 +13,8 @@
 #include <stack>
 #include <vector>
 #include <list>
+#include <string>
 #include <algorithm>
-#include "Edge.hpp"
 
 using std::queue;
 using std::stack;
@@ -22,6 +22,7 @@ using std::vector;
 using std::list;
 using std::pair;
 using std::tuple;
+using std::string;
 using std::priority_queue;
 
 class Graph
@@ -41,6 +42,11 @@ private:
     
     vector<pair<int, int>> BFS(int sourceNode); // return the vector of pair<prenode, distance from sourceNode>
     tuple<bool, list<int>, list<int>> DFS(); // return <isAcyclic, firstTimeList, lastTimeList>
+    
+    vector<pair<int, int>> shortestPathInitialization();
+    void relax(int u, vector<pair<int, int>> &nodeVec);
+    vector<pair<int, int>> DAGShortestPath();
+    vector<pair<int, int>> DijkstraShortestPath(int s);
 
     void printPath(int sourceNode, int destNode, vector<pair<int, int>> preEdgeVec);
 public:
@@ -48,7 +54,7 @@ public:
     void addEdge(int i, int j, int length=1, bool isDirected=1);
     void printGraph();
     
-    void printBFSPath(int sourceNode, int destNode);
+    void printShortestPath(int sourceNode, int destNode, string mode);
     list<int> topoSort(); // return the topological sort
     vector<vector<int>> findSCCs();
     
@@ -56,6 +62,7 @@ public:
     vector<pair<int, int>> krustkalSpanningTree();
     vector<pair<int, int>> primSpanningTree(int seed);
 
+    
 };
 
 #endif /* Graph_hpp */

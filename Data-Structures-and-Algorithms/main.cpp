@@ -20,18 +20,21 @@ int main(int argc, const char * argv[]) {
     // insert code here...
     Graph graph = Graph(6);
     
-    graph.addEdge(0, 1, 1, 0);
-    graph.addEdge(0, 3, 1, 0);
-    graph.addEdge(1, 4, 1, 0);
-
-    graph.addEdge(4, 3, 1, 0);
-    graph.addEdge(2, 5, 1, 0);
-    graph.addEdge(2, 4, 1, 0);
+    graph.addEdge(0, 1, 5);
+    graph.addEdge(0, 2, 3);
+    graph.addEdge(1, 2, 2);
+    graph.addEdge(1, 3, 6);
+    graph.addEdge(2, 3, 7);
+    graph.addEdge(2, 4, 4);
+    graph.addEdge(2, 5, 2);
+    graph.addEdge(3, 5, 1);
+    graph.addEdge(3, 4, -1);
+    graph.addEdge(4, 5, -2);
     
     graph.printGraph();
     
     try {
-        graph.printBFSPath(0, 4);
+        graph.printShortestPath(0, 1, "DAG");
     } catch (const char* msg) {
         std::cout << msg << std::endl;
     }

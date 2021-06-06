@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		E365848C26516B4F00F1B3D4 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E365848B26516B4F00F1B3D4 /* main.cpp */; };
+		E36A2EAB266D02FB00509A42 /* graphShortestPathFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36A2EAA266D02FB00509A42 /* graphShortestPathFunctions.cpp */; };
 		E3A547C52665B9D00050F14B /* generateSpanningTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A547C42665B9D00050F14B /* generateSpanningTree.cpp */; };
 		E3A547C826665F620050F14B /* basicGraphFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A547C726665F620050F14B /* basicGraphFunctions.cpp */; };
 		E3D7BB5026562B7A00564357 /* graphSearchFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3D7BB4B26562B7A00564357 /* graphSearchFunctions.cpp */; };
-		E3D7BB5126562B7A00564357 /* Edge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3D7BB4C26562B7A00564357 /* Edge.cpp */; };
 		E3D7BB5226562B7A00564357 /* Tree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3D7BB4F26562B7A00564357 /* Tree.cpp */; };
 /* End PBXBuildFile section */
 
@@ -30,12 +30,11 @@
 /* Begin PBXFileReference section */
 		E365848826516B4F00F1B3D4 /* Data-Structures-and-Algorithms */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Data-Structures-and-Algorithms"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E365848B26516B4F00F1B3D4 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		E36A2EAA266D02FB00509A42 /* graphShortestPathFunctions.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = graphShortestPathFunctions.cpp; sourceTree = "<group>"; };
 		E3A547C42665B9D00050F14B /* generateSpanningTree.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = generateSpanningTree.cpp; sourceTree = "<group>"; };
 		E3A547C726665F620050F14B /* basicGraphFunctions.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = basicGraphFunctions.cpp; sourceTree = "<group>"; };
 		E3D7BB4A26562B7A00564357 /* Tree.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Tree.hpp; sourceTree = "<group>"; };
 		E3D7BB4B26562B7A00564357 /* graphSearchFunctions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = graphSearchFunctions.cpp; sourceTree = "<group>"; };
-		E3D7BB4C26562B7A00564357 /* Edge.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Edge.cpp; sourceTree = "<group>"; };
-		E3D7BB4D26562B7A00564357 /* Edge.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Edge.hpp; sourceTree = "<group>"; };
 		E3D7BB4E26562B7A00564357 /* Graph.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Graph.hpp; sourceTree = "<group>"; };
 		E3D7BB4F26562B7A00564357 /* Tree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tree.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -89,9 +88,8 @@
 		E3D7BB5526562BAB00564357 /* Graph */ = {
 			isa = PBXGroup;
 			children = (
-				E3D7BB4C26562B7A00564357 /* Edge.cpp */,
-				E3D7BB4D26562B7A00564357 /* Edge.hpp */,
 				E3D7BB4B26562B7A00564357 /* graphSearchFunctions.cpp */,
+				E36A2EAA266D02FB00509A42 /* graphShortestPathFunctions.cpp */,
 				E3D7BB4E26562B7A00564357 /* Graph.hpp */,
 				E3A547C42665B9D00050F14B /* generateSpanningTree.cpp */,
 				E3A547C726665F620050F14B /* basicGraphFunctions.cpp */,
@@ -155,12 +153,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E3D7BB5126562B7A00564357 /* Edge.cpp in Sources */,
 				E3D7BB5226562B7A00564357 /* Tree.cpp in Sources */,
 				E3D7BB5026562B7A00564357 /* graphSearchFunctions.cpp in Sources */,
 				E3A547C826665F620050F14B /* basicGraphFunctions.cpp in Sources */,
 				E3A547C52665B9D00050F14B /* generateSpanningTree.cpp in Sources */,
 				E365848C26516B4F00F1B3D4 /* main.cpp in Sources */,
+				E36A2EAB266D02FB00509A42 /* graphShortestPathFunctions.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
