@@ -17,7 +17,7 @@ void Graph::printShortestPath(int sourceNode, int destNode, string mode)
     }
     else if (mode == "DAG")
     {
-        nodeDistanceVec = DAGShortestPath();
+        nodeDistanceVec = DAGShortestPath(sourceNode);
     }
     else if (mode == "Dijkstra")
     {
@@ -31,24 +31,27 @@ void Graph::printShortestPath(int sourceNode, int destNode, string mode)
     printf("(end)\n");
 }
 
-vector<pair<int, int>> Graph::shortestPathInitialization()
+vector<pair<int, int>> Graph::shortestPathInitialization(int sourceNode)
 {
-    return vector<pair<int, int>>(graph.size(), std::make_pair(null, inf));
+    auto result = vector<pair<int, int>>(graph.size(), std::make_pair(null, inf));
+    result.at(sourceNode).second = 0;
+    return result;
 }
 
 void Graph::relax(int u, vector<pair<int, int>> &nodeVec)
 {
-    for (int v = 0; v < graph.at(u).size(); v++) {
-        if (nodeVec.at(u).second + graph.at(u).at(v).second < nodeVec.at(v).second) {
-            nodeVec.at(v).second = nodeVec.at(u).second + graph.at(u).at(v).second;
+    for (int i = 0; i < graph.at(u).size(); i++) {
+        int v = graph.at(u).at(i).first;
+        if (nodeVec.at(u).second + graph.at(u).at(i).second < nodeVec.at(v).second) {
+            nodeVec.at(v).second = nodeVec.at(u).second + graph.at(u).at(i).second;
             nodeVec.at(v).first = u;
         }
     }
 }
 
-vector<pair<int, int>> Graph::DAGShortestPath()
+vector<pair<int, int>> Graph::DAGShortestPath(int sourceNode)
 {
-    auto result = shortestPathInitialization();
+    auto result = shortestPathInitialization(sourceNode);
     list<int> topoSortResult;
     try {
         topoSortResult = topoSort();

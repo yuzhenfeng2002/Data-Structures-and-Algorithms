@@ -43,9 +43,9 @@ private:
     vector<pair<int, int>> BFS(int sourceNode); // return the vector of pair<prenode, distance from sourceNode>
     tuple<bool, list<int>, list<int>> DFS(); // return <isAcyclic, firstTimeList, lastTimeList>
     
-    vector<pair<int, int>> shortestPathInitialization();
+    vector<pair<int, int>> shortestPathInitialization(int sourceNode);
     void relax(int u, vector<pair<int, int>> &nodeVec);
-    vector<pair<int, int>> DAGShortestPath();
+    vector<pair<int, int>> DAGShortestPath(int s);
     vector<pair<int, int>> DijkstraShortestPath(int s);
 
     void printPath(int sourceNode, int destNode, vector<pair<int, int>> preEdgeVec);

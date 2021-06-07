@@ -34,7 +34,7 @@ int main(int argc, const char * argv[]) {
     graph.printGraph();
     
     try {
-        graph.printShortestPath(0, 1, "DAG");
+        graph.printShortestPath(0, 5, "DAG");
     } catch (const char* msg) {
         std::cout << msg << std::endl;
     }

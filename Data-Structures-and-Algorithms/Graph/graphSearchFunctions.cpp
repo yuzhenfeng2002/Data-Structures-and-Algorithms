@@ -10,7 +10,7 @@
 vector<pair<int, int>> Graph::BFS(int sourceNode)
 {
     queue<int> nodeQ = queue<int>();
-    vector<pair<int, int>> nodeDistanceVec = shortestPathInitialization();
+    vector<pair<int, int>> nodeDistanceVec = shortestPathInitialization(sourceNode);
     nodeDistanceVec.at(sourceNode).first = null;
     nodeDistanceVec.at(sourceNode).second = 0;
     nodeQ.push(sourceNode);
@@ -77,8 +77,8 @@ tuple<bool, list<int>, list<int>> Graph::DFS()
                     for (int j = 0; j < graph.at(u).size(); j++) {
                         int v = graph.at(u).at(j).first;
                         if (nodeVec.at(v) == null) {
-                            if (v >= index) {
-                                nodeStack.push(std::make_tuple(u, 2, v + 1));
+                            if (j >= index) {
+                                nodeStack.push(std::make_tuple(u, 2, j + 1));
                                 u = v;
                                 step = 1;
                                 index = 0;
