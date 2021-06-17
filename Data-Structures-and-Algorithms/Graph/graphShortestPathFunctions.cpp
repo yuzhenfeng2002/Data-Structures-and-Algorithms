@@ -23,6 +23,10 @@ void Graph::printShortestPath(int sourceNode, int destNode, string mode)
     {
         nodeDistanceVec = DijkstraShortestPath(sourceNode);
     }
+    else if (mode == "BellmanFord")
+    {
+        nodeDistanceVec = BellmanFordAlgorithm(sourceNode);
+    }
     
     printf("The distance between the source and destination is %d.\n",
            nodeDistanceVec.at(destNode).second);
@@ -38,20 +42,23 @@ vector<pair<int, int>> Graph::shortestPathInitialization(int sourceNode)
     return result;
 }
 
-void Graph::relax(int u, vector<pair<int, int>> &nodeVec)
+bool Graph::relax(int u, vector<pair<int, int>> &nodeVec)
 {
+    bool isRelaxed = true;
     for (int i = 0; i < graph.at(u).size(); i++) {
         int v = graph.at(u).at(i).first;
         if (nodeVec.at(u).second + graph.at(u).at(i).second < nodeVec.at(v).second) {
             nodeVec.at(v).second = nodeVec.at(u).second + graph.at(u).at(i).second;
             nodeVec.at(v).first = u;
+            isRelaxed = false;
         }
     }
+    return isRelaxed;
 }
 
-vector<pair<int, int>> Graph::DAGShortestPath(int sourceNode)
+vector<pair<int, int>> Graph::DAGShortestPath(int s)
 {
-    auto result = shortestPathInitialization(sourceNode);
+    auto result = shortestPathInitialization(s);
     list<int> topoSortResult;
     try {
         topoSortResult = topoSort();
@@ -103,6 +110,25 @@ vector<pair<int, int>> Graph::DijkstraShortestPath(int s)
     vector<pair<int, int>> result = vector<pair<int, int>>();
     for (int i = 0; i < nodeVec.size(); i++) {
         result.push_back(std::make_pair(std::get<1>(nodeVec.at(i)), std::get<0>(nodeVec.at(i))));
+    }
+    return result;
+}
+
+vector<pair<int, int>> Graph::BellmanFordAlgorithm(int s)
+{
+    auto result = shortestPathInitialization(s);
+    int i = 0;
+    for (i = 0; i < graph.size(); i++) {
+        bool isRelaxed = true;
+        for (int u = 0; u < graph.size(); u++) {
+            isRelaxed = isRelaxed && relax(u, result);
+        }
+        if (isRelaxed) {
+            break;
+        }
+    }
+    if (i == graph.size()) {
+        throw "Cannot find a shortest path!";
     }
     return result;
 }

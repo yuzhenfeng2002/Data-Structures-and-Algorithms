@@ -44,9 +44,10 @@ private:
     tuple<bool, list<int>, list<int>> DFS(); // return <isAcyclic, firstTimeList, lastTimeList>
     
     vector<pair<int, int>> shortestPathInitialization(int sourceNode);
-    void relax(int u, vector<pair<int, int>> &nodeVec);
+    bool relax(int u, vector<pair<int, int>> &nodeVec); // judge if all edges connected to u have already been relaxed
     vector<pair<int, int>> DAGShortestPath(int s);
     vector<pair<int, int>> DijkstraShortestPath(int s);
+    vector<pair<int, int>> BellmanFordAlgorithm(int s);
 
     void printPath(int sourceNode, int destNode, vector<pair<int, int>> preEdgeVec);
 public:
@@ -61,8 +62,6 @@ public:
     // return the edges pair<u, v> in the spanning tree
     vector<pair<int, int>> krustkalSpanningTree();
     vector<pair<int, int>> primSpanningTree(int seed);
-
-    
 };
 
 #endif /* Graph_hpp */

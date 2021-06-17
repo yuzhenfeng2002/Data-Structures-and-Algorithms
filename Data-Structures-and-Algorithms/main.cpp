@@ -34,7 +34,17 @@ int main(int argc, const char * argv[]) {
     graph.printGraph();
     
     try {
+        graph.printShortestPath(0, 5, "BellmanFord");
+    } catch (const char* msg) {
+        std::cout << msg << std::endl;
+    }
+    try {
         graph.printShortestPath(0, 5, "DAG");
+    } catch (const char* msg) {
+        std::cout << msg << std::endl;
+    }
+    try {
+        graph.printShortestPath(0, 5, "Dijkstra");
     } catch (const char* msg) {
         std::cout << msg << std::endl;
     }
