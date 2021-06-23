@@ -25,7 +25,15 @@ void Graph::printShortestPath(int sourceNode, int destNode, string mode)
     }
     else if (mode == "BellmanFord")
     {
-        nodeDistanceVec = BellmanFordAlgorithm(sourceNode);
+        nodeDistanceVec = BellmanFordShortestPath(sourceNode);
+    }
+    else if (mode == "FloydWarshall")
+    {
+        auto result = FloydWarshallShortestPath();
+        for (int i = 0; i < graph.size(); i++) {
+            nodeDistanceVec.push_back(std::make_pair(result.second.at(sourceNode).at(i),
+                                                     result.first.at(sourceNode).at(i)));
+        }
     }
     
     printf("The distance between the source and destination is %d.\n",
@@ -114,14 +122,14 @@ vector<pair<int, int>> Graph::DijkstraShortestPath(int s)
     return result;
 }
 
-vector<pair<int, int>> Graph::BellmanFordAlgorithm(int s)
+vector<pair<int, int>> Graph::BellmanFordShortestPath(int s)
 {
     auto result = shortestPathInitialization(s);
     int i = 0;
     for (i = 0; i < graph.size(); i++) {
         bool isRelaxed = true;
         for (int u = 0; u < graph.size(); u++) {
-            isRelaxed = isRelaxed && relax(u, result);
+            isRelaxed = relax(u, result) && isRelaxed;
         }
         if (isRelaxed) {
             break;
@@ -131,4 +139,37 @@ vector<pair<int, int>> Graph::BellmanFordAlgorithm(int s)
         throw "Cannot find a shortest path!";
     }
     return result;
+}
+
+pair<vector<vector<int>>, vector<vector<int>>> Graph::FloydWarshallShortestPath()
+{
+    // initialize
+    auto distance = vector<vector<int>>(int(graph.size()),
+                                        vector<int>(int(graph.size()), inf));
+    auto pi = vector<vector<int>>(int(graph.size()),
+                                        vector<int>(int(graph.size()), inf));
+    for (int i = 0; i < graph.size(); i++) {
+        for (int j = 0; j < graph.at(i).size(); j++) {
+            auto edge = graph.at(i).at(j);
+            distance.at(i).at(edge.first) = edge.second;
+            pi.at(i).at(edge.first) = i;
+        }
+        distance.at(i).at(i) = 0;
+        pi.at(i).at(i) = i;
+    }
+    
+    // iterate
+    for (int k = 0; k < graph.size(); k++) {
+        for (int i = 0; i < graph.size(); i++) {
+            for (int j = 0; j < graph.size(); j++) {
+                if (distance.at(i).at(j) >
+                    distance.at(i).at(k) + distance.at(k).at(j)) {
+                    distance.at(i).at(j) = distance.at(i).at(k) + distance.at(k).at(j);
+                    pi.at(i).at(j) = pi.at(k).at(j);
+                }
+            }
+        }
+    }
+    
+    return std::make_pair(distance, pi);
 }

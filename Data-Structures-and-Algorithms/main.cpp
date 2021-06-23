@@ -12,51 +12,31 @@
 
 using std::cout;
 
-const int N = 15;
-const int MAX = 20;
-const int MIN = 0;
-
 int main(int argc, const char * argv[]) {
     // insert code here...
-    Graph graph = Graph(6);
+    Graph graph = Graph(5);
     
-    graph.addEdge(0, 1, 5);
-    graph.addEdge(0, 2, 3);
-    graph.addEdge(1, 2, 2);
-    graph.addEdge(1, 3, 6);
-    graph.addEdge(2, 3, 7);
-    graph.addEdge(2, 4, 4);
-    graph.addEdge(2, 5, 2);
-    graph.addEdge(3, 5, 1);
-    graph.addEdge(3, 4, -1);
-    graph.addEdge(4, 5, -2);
+    graph.addEdge(0, 1, 3);
+    graph.addEdge(0, 2, 8);
+    graph.addEdge(0, 4, -4);
+    graph.addEdge(1, 3, 1);
+    graph.addEdge(1, 4, 7);
+    graph.addEdge(2, 1, 4);
+    graph.addEdge(3, 0, 2);
+    graph.addEdge(3, 2, -5);
+    graph.addEdge(4, 3, 6);
     
     graph.printGraph();
     
     try {
-        graph.printShortestPath(0, 5, "BellmanFord");
+        graph.printShortestPath(0, 1, "BellmanFord");
     } catch (const char* msg) {
         std::cout << msg << std::endl;
     }
     try {
-        graph.printShortestPath(0, 5, "DAG");
+        graph.printShortestPath(0, 1, "FloydWarshall");
     } catch (const char* msg) {
         std::cout << msg << std::endl;
     }
-    try {
-        graph.printShortestPath(0, 5, "Dijkstra");
-    } catch (const char* msg) {
-        std::cout << msg << std::endl;
-    }
-    
-    try {
-        graph.topoSort();
-    } catch (const char* msg) {
-        std::cout << msg << std::endl;
-    }
-    auto SCCs = graph.findSCCs();
-    
-    auto krustkalTree = graph.krustkalSpanningTree();
-    auto primTree = graph.primSpanningTree(0);
     return 0;
 }

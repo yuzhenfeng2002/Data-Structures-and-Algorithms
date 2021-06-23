@@ -47,7 +47,8 @@ private:
     bool relax(int u, vector<pair<int, int>> &nodeVec); // judge if all edges connected to u have already been relaxed
     vector<pair<int, int>> DAGShortestPath(int s);
     vector<pair<int, int>> DijkstraShortestPath(int s);
-    vector<pair<int, int>> BellmanFordAlgorithm(int s);
+    vector<pair<int, int>> BellmanFordShortestPath(int s);
+    pair<vector<vector<int>>, vector<vector<int>>> FloydWarshallShortestPath();
 
     void printPath(int sourceNode, int destNode, vector<pair<int, int>> preEdgeVec);
 public:
